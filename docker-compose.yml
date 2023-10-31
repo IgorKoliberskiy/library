@@ -1,0 +1,23 @@
+services:
+  storage:
+    image: redis
+    volumes:
+      - ./data:/data
+
+  counter:
+    image: igorkoliberskiy/library-counter
+    environment:
+      - PORT=3001
+      - REDIS_URL=redis://storage
+    depends_on:
+      - storage
+
+  library:
+    image: igorkoliberskiy/library
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+      - COUNTER_URL=http://counter:3001
+    depends_on:
+      - counter
